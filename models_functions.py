@@ -82,17 +82,14 @@ def create_lstm_dataset(df):
     return train, label, model
 
 def predict_next_loto_numbers(model, df):
-    # Prédiction basée sur les 12 derniers tirages
-    last_draws = df.tail(WINDOW_LENGTH)
+    # Prédiction basée sur les x derniers tirages
+    last_draws = df.tail(WINDOW_LENGTH) # on recupere les x derniers tirages
+    scaler = StandardScaler().fit(df.values)
+    scaled_to_predict = scaler.transform(last_draws)
+    scaled_predicted_output_1 = model.predict(np.array([scaled_to_predict]))
 
-    scaler = StandardScaler().fit(df.values)                                   # Récupération des 12 derniers tirages
-    scaled_to_predict = StandardScaler().fit(df.values).transform(last_draws)  # Mise à l'échelle des données pour la prédiction
-    scaled_predicted_output_1 = model.predict(np.array([scaled_to_predict]))   # Prédiction
-
-    # Prédiction effective
-    tom = df.tail(WINDOW_LENGTH).iloc[:,0:6]                 # Sélection des données pour la prédiction
-    scaler = StandardScaler().fit(df.iloc[:,0:6])            # Mise à l'échelle des données
-    scaled_to_predict = scaler.transform(tom)                # Mise à l'échelle des données pour la prédiction
-    predicted_output = model.predict(np.array([scaled_to_predict]))  # Prédiction des prochains numéros
-    predicted_numbers = scaler.inverse_transform(predicted_output).astype(int)[0]  # Inversion de la mise à l'échelle
-    return predicted_numbers
+    #prediction
+    tom = df.tail(WINDOW_LENGTH).iloc[:,0:6] #
+    scaler = StandardScaler().fit(df.iloc[:,0:6])
+    scaled_to_predict = scaler.transform(tom)
+    print(scaler.inverse_transform(scaled_predicted_output_1).astype(int)[0])

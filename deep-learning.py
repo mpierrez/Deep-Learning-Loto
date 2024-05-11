@@ -11,7 +11,7 @@ from models_functions import *                           # Importation de toutes
 df_tirage = scrap_loto_numbers()
 
 #LIGNE A ACTIVER SI ON VEUT TESTER LA PREDICTION DU DERNIER TIRAGE
-df_tirage.drop(df_tirage.head(1).index,inplace=True)
+#df_tirage.drop(df_tirage.head(1).index,inplace=True)
 
 # Affichage du dataframe des tirages
 print(df_tirage)
@@ -43,7 +43,7 @@ df['is_under_40'] = is_under(df, 40)        # Nombre de numéros en dessous de 4
 print(df.head(6))
 
 # Moniteur pour arrêter l'entraînement
-es = EarlyStopping(monitor='acc', mode='max', verbose=1, patience=100)
+es = EarlyStopping(monitor='acc', mode='max', verbose=1, patience=1, min_delta=10)
 
 # Formatage des données pour le modèle LSTM
 train, label, model = create_lstm_dataset(df)
@@ -58,7 +58,7 @@ plt.plot(history.history['loss'])
 plt.legend(['train_loss'])
 
 # Prédiction
-print(predict_next_loto_numbers(model, df))     # Prédiction des prochains numéros
+predict_next_loto_numbers(model, df)
 
 # Affichage du graphique de l'entrainement
 plt.show()
